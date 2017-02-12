@@ -6,8 +6,7 @@ Drop your series to automatically get the correct subtitle from addic7ed.
 - Popcorn Time remote, get addic7ed subtitle for the current playing Serie.
 
 ## Filename parser compatible with
-EZTV Show TV-Series (more soon…)
-Popcorn Time Remote
+- EZTV Show TV-Series (more soon…)
 
 ## To Use
 First we need to install node.js. So go ahead and do that.
