@@ -7,10 +7,37 @@
 		<link rel="stylesheet" href="assets/css/style.css">
 	</head>
 	<body>
-		<div id="drop">
-			<div class="container">
-				<p class="txt">Drop your file here :)</p>
+		<div class="section show" id="section-home">
+			<div id="drop">
+				<div class="container">
+					<p class="txt">Drop your file here :)</p>
+				</div>
 			</div>
+			<a href="#" id="settings-button">
+				<i class="fa fa-cog"></i>
+			</a>
+		</div>
+		<div class="section hero padding" id="section-settings">
+			<a href="#" id="close-settings-button">
+				<i class="fa fa-times"></i>
+			</a>
+			<h2>Settings</h2>
+			<form>
+				IP <br> <input type="text" id ="ip" name="ip" /> <br />
+				Port <br> <input type="text" name="poort" id="port" /> <br />
+				Username <br> <input type="text" name="username" id="username" /> <br />
+				Password <br> <input type="text" name="password" id="password" /> <br />
+				Language <br> <input type="text" name="subtitle_lang" id="subtitle_lang" /> <br />
+			</form>
+		</div>
+		<div class="popcorntime-popover">
+			<h2>Popcorn Time Player detected</h2>
+			<p>Do you want download subtitle ?</p>
+			<a href="#" class="pop-button" id="popcorn-time-yes">YES</a>
+		</div>
+		<div class="popcorntime-popover-loader">
+			<h2>Please wait…</h2>
+			<span class="pop-loader-title"></span>
 		</div>
 	</body>
 	
