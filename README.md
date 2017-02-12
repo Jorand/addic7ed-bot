@@ -1,11 +1,11 @@
-# addic7ed-bot
+# Addic7ed bot
 Drop your series to automatically get the correct subtitle from addic7ed.
 
 ## Filename parser compatible with
-eztv
-(Added support soon…)
+EZTV Show TV-Series (more soon…)
 
 ## To Use
+First we need to install node.js. So go ahead and do that.
 
 ```bash
 # Install dependencies
