@@ -66,6 +66,30 @@ body{
 		color: #000;
 	}
 
+#reload-settings-button {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	color: #ccc;
+	padding: 15px;
+	transition: all 100ms;
+}
+
+	#reload-settings-button:hover {
+		color: #000;
+	}
+
+.alert-pop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: #ccc;
+	text-align: center;
+	padding: 5px;
+	font-size: 0.8rem;
+}
+
 .section {
 	position: absolute;
 	top: 0;
@@ -123,3 +147,4 @@ body{
 		#close-pop-button:hover {
 			color: #000;
 		}
+

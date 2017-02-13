@@ -224,6 +224,11 @@ $(document).ready(function() {
 		popcorntimeDlSub();
 	});
 
+	$('#reload-settings-button').click(function(event) {
+		event.preventDefault();
+		refreshSettings();
+	});
+
 	function sectionGo(id) {
 		var target = $('#section-'+id);
 		if (target) {
@@ -406,7 +411,12 @@ $(document).ready(function() {
 				else if (callback !== undefined) {
 					callback(data);
 				}
-			},		
+			},
+			error: function (request, status, error) {
+				console.error("[ERROR] Could not connect to given client.");
+				alertPop("Could not connect to Popcorn Time. Please check your settings.");
+				window.connected = false;
+		    }	
 		});
 		
 	}
@@ -520,13 +530,14 @@ $(document).ready(function() {
 			success: function(data, textStatus) {
 				if(typeof data.error == "undefined") { //check if there are no errors
 					console.info("[INFO] Connection established.");
-					closeSettings();
+					//closeSettings();
 					window.connected = true;
+					alertPop("Connected :)");
 				}
 				else { //there are errors
 					if(warning){
 						console.error("[ERROR] Invalid login credentials.");
-						alert("Invalid login credetials provided.");
+						alertPop("Invalid login credetials provided.");
 					}
 					window.connected = false;
 				}
@@ -534,11 +545,15 @@ $(document).ready(function() {
 			error: function() {
 				if(warning) {
 					console.error("[ERROR] Could not connect to given client.");
-					alert("Could not connect to Popcorn Time. Please check your settings.");
+					alertPop("Could not connect to Popcorn Time. Please check your settings.");
 				}
 				window.connected = false;
 			}
 		});
+	}
+
+	function alertPop(msg) {
+		$('.alert-pop').text(msg);
 	}
 
 });
