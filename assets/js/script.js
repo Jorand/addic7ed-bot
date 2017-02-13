@@ -347,21 +347,26 @@ $(document).ready(function() {
 
 	function popcorntimeNotifySub() {
 
-		callPopcornApi("getplaying", function(data) {
-			if (data.result.title) {
-				console.log(data.result.title);
+		var checkShow = function(data) {
+			var r = popParseTitle(data);
+			console.log(r);
+			if (r.season && r.episode) {
 				currentShow = data;
 				showNotice();
-			};
+			}
+		};
+
+		callPopcornApi("getplaying", function(data) {
+			if (data.result.title) {
+				checkShow(data);
+			}
 			
 		});
 
 		callPopcornApi("getloading", function(data) {
 			if (data.result.title) {
-				console.log(data.result.title);
-				showNotice();
-				currentShow = data;
-			};
+				checkShow(data);
+			}
 		});
 	}
 
