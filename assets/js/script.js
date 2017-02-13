@@ -273,9 +273,11 @@ $(document).ready(function() {
 
 			$('.pop-loader-title').text(result['title']+" season: "+result['season']+" episode: "+result['episode']);
 
+
+			console.log(subtitle_lang);
 			addic7edApi.search(result['title'], result['season'], result['episode'], subtitle_lang).then(function (subtitlesList) {
 				
-				//console.log(subtitlesList);
+				console.log(subtitlesList);
 
 				var last_updated_version = 0;
 				var last_updated_version_i = 0;
@@ -353,6 +355,7 @@ $(document).ready(function() {
 	function popcorntimeNotifySub() {
 
 		var checkShow = function(data) {
+			console.log(data);
 			var r = popParseTitle(data);
 			console.log(r);
 			if (r.season && r.episode) {
@@ -506,7 +509,7 @@ $(document).ready(function() {
 		window.port = window.localStorage.getItem("port");
 		window.username = window.localStorage.getItem("username");
 		window.password = window.localStorage.getItem("password");
-		window.subtitle_lang = window.localStorage.getItem("lang");
+		subtitle_lang = window.localStorage.getItem("subtitle_lang");
 		checkConnected(false);
 		console.debug("[DEBUG] Settings refreshed.");
 	}
