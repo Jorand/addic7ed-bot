@@ -40,7 +40,9 @@ $drop.on("dragend", function(event) {
 $drop.on("drop", function(event) {
 	event.preventDefault();
 
-	if (drop_in_progress !== false) {
+	console.log(drop_in_progress);
+
+	if (drop_in_progress == false) {
 		drop_in_progress = true;
 
 		refreshSettings();
