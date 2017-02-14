@@ -29,8 +29,9 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
-  
+  // if (NODE_ENV && NODE_ENV == 'development') {
+  //   mainWindow.webContents.openDevTools()
+  // }
   mainWindow.setMenu(null);
 
   // Emitted when the window is closed.
