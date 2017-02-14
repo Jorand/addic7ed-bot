@@ -25,10 +25,6 @@ npm install
 # Run the app
 npm start
 
-# Package the app for mac
-npm run package-mac
-# Package the app for windows
-npm run package-win
-# Package the app for linux
-npm run package-linux
+# Build the app for mac
+npm run dist
 ```
