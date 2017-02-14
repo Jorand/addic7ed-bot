@@ -1,7 +1,7 @@
 # Addic7ed bot
 Drop your series to automatically get the correct subtitle from addic7ed.
 
-![screenshot](screenshot.png)
+![screenshot](screenshot.png =250x)
 
 ## Features
 - Drop EZTV file directly on the app for download the correct subtitle from addic7ed.
