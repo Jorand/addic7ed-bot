@@ -429,6 +429,7 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 			console.error("[ERROR] Could not connect to given client.");
 			alertPop("Could not connect to Popcorn Time. Please check your settings.");
 			window.connected = false;
+			hideNotice();
 		}	
 	});
 	
