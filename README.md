@@ -1,6 +1,8 @@
 # Addic7ed bot
 Drop your series to automatically get the correct subtitle from addic7ed.
 
+![screenshot](screenshot.png)
+
 ## Features
 - Drop EZTV file directly on the app for download the correct subtitle from addic7ed.
 - Popcorn Time remote, get addic7ed subtitle for the current playing Serie.
