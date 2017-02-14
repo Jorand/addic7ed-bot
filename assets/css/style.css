@@ -116,7 +116,8 @@ body{
 }
 
 .popcorntime-popover,
-.popcorntime-popover-loader {
+.popcorntime-popover-loader,
+.popcorntime-popover-list {
 	position: absolute;
 	z-index: 2;
 	top: 0;
@@ -150,3 +151,35 @@ body{
 			color: #000;
 		}
 
+.popcorntime-popover-list {
+	height: 100%;
+	overflow: auto;
+}
+
+	.popcorntime-subtitles-list {
+		list-style: none;
+		padding: 0;
+		background-color: #fff;
+	}
+
+	.popcorntime-subtitles-list li a {
+		display: block;
+		cursor: pointer;
+		padding: 10px;
+		font-size: 1rem;
+		border-bottom: 4px solid #0CF7B7;
+	}
+
+		.popcorntime-subtitles-list li a:hover {
+			background-color: #000;
+			color: #fff;
+		}
+
+	.popcorntime-list-close {
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: #000;
+		padding: 15px;
+		transition: all 100ms;
+	}

@@ -176,6 +176,102 @@ $("#password").on('input', function(){
 	refreshSettings();
 });
 
+var popcorn_time_cache_subtitlesList = null;
+
+$('.popcorntime-list-close').click(function(event) {
+	event.preventDefault();
+	$('.popcorntime-popover-list').hide();
+});
+
+$('#popcorn-time-list').click(function(event) {
+	event.preventDefault();
+	event.preventDefault();
+
+	$('.popcorntime-popover').hide();
+	$('.popcorntime-popover-loader').show();
+
+	var $list = $('.popcorntime-subtitles-list');
+	
+	pop_dl_in_progress = true;
+
+	var file = currentShow.result.title;
+
+	var show = currentShow.tnp;
+
+	setText("Searching for <br>"+show.title+"<br> season: "+show.season+" espisode: "+show.episode);
+
+	addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(function (subtitlesList) {
+
+		console.log(subtitlesList);
+
+		$list.html('');
+
+		var last_updated_version = 0,
+			last_updated_version_i = 0,
+			i;
+
+		for (i = 0; i < subtitlesList.length; ++i) {
+			var s = subtitlesList[i];
+			var s_link = s['link'].split('/');
+			var updated_version = s_link[s_link.length-1];
+			
+			$list.append('<li><a class="popcorntime-sub" href="#" data-index="'+i+'">Version '+s['version']+', '+s['lang']+'</a></li>');
+		}
+
+		$('.popcorntime-popover-list').show();
+
+		popcorn_time_cache_subtitlesList = subtitlesList;
+
+	});
+});
+
+$('.popcorntime-subtitles-list').delegate('a','click',function() {
+	event.preventDefault();
+	var index = $(this).data('index');
+
+	if (popcorn_time_cache_subtitlesList && popcorn_time_cache_subtitlesList[index] ) {
+
+		var sub = popcorn_time_cache_subtitlesList[index];
+
+		var show = currentShow.tnp;
+
+		var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt'; 
+
+		if (sub) {
+
+			dialog.showOpenDialog({
+				title:"Select a folder",
+				properties: ["openDirectory"]
+			},function (folderPaths) {
+
+				$('.popcorntime-popover-loader').hide();
+				// folderPaths is an array that contains all the selected paths
+				if(folderPaths === undefined){
+					setText("Oups, no destination folder selected !");
+					pop_dl_in_progress = false;
+					return;
+				}
+				else {
+
+					var str_path = folderPaths[0]+'/'+str_filename;
+
+					addic7edApi.download(sub, str_path).then(function () {
+
+						$('.popcorntime-popover-list').hide();
+
+						console.log('Subtitles file saved to ' + str_path);
+						setText('Subtitles file saved ! Enjoy :)');
+
+						shell.showItemInFolder(str_path);
+
+						pop_dl_in_progress = false;
+
+					});
+				}
+			});
+		}
+	}
+});
 
 $('#popcorn-time-yes').click(function(event) {
 	event.preventDefault();
@@ -246,8 +342,6 @@ $('#popcorn-time-yes').click(function(event) {
 		}
 
 	});
-
-
 
 });
 
