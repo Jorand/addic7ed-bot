@@ -5,6 +5,9 @@ Drop your series to automatically get the correct subtitle from addic7ed.
 - Drop EZTV file directly on the app for download the correct subtitle from addic7ed.
 - Popcorn Time remote, get addic7ed subtitle for the current playing Serie.
 
+## Next/TODO
+- Use electron-builder and auto-update
+
 ## Filename parser compatible with
 - EZTV Show TV-Series (more soon…)
 

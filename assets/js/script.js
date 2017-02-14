@@ -12,9 +12,6 @@ var version_map = {
 	"WEB-DL": "WEB-DL"
 };
 
-// Regex serie from https://github.com/ableev/downloadSubtitles/blob/master/downloadSubtitles.js
-var serie_regex = /(.*)\.[Ss]([0-9]+)[Ee]([0-9]+)\.([0-9]+p)\.([A-Za-z-]+)\.(.*)\.([A-Za-z0-9]+)/g;
-
 function setText(msg) {
 	$drop.find('.txt').html(msg);
 }
