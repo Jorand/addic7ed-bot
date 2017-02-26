@@ -30,9 +30,9 @@ body{
 	}
 
 	#drop .txt {
-		display: table-cell; 
-		vertical-align: middle; 
-		text-align: center; 
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center;
 	}
 
 #drop.hover {
@@ -184,23 +184,81 @@ body{
 		transition: all 100ms;
 	}
 
-.popcorntime-popover-ip-list {
+.switch-enable-pop {
 	position: absolute;
-	z-index: 2;
-	top: 0;
+	bottom: 0;
 	left: 0;
-	right: 0;
-	height: auto;
-	background-color: #0CF7B7;
-	padding: 0px 20px;
-	font-size: 0.8rem;
-	display: none;
+	padding: 15px;
 }
 
-	.popcorntime-popover-ip-list .pop-button {
-		
+	.switch-enable-pop .label-txt {
+		display: inline-block;
+		font-size: 0.5em;
+		vertical-align: middle;
+		transition: color 0.4s;
 	}
 
-	.pop-select {
-		margin-bottom: 20px;
+		.switch-enable-pop .label-txt.on {
+			 color: #0CF7B7;
+		}
+
+	.switch {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+/* TOGGLE
+http://callmenick.com/post/css-toggle-switch-examples */
+
+.pop-toggle {
+	position: absolute;
+	margin-left: -9999px;
+	visibility: hidden;
+}
+	.pop-toggle + label {
+		display: block;
+		position: relative;
+		cursor: pointer;
+		outline: none;
+		user-select: none;
+	}
+
+	/* ROUND FLAT */
+	input.pop-toggle-round-flat + label {
+	  padding: 2px;
+	  width: 30px;
+	  height: 15px;
+	  background-color: #dddddd;
+	  border-radius: 30px;
+	  transition: background 0.4s;
+	}
+	input.pop-toggle-round-flat + label:before, input.pop-toggle-round-flat + label:after {
+	  display: block;
+	  position: absolute;
+	  content: "";
+	}
+	input.pop-toggle-round-flat + label:before {
+	  top: 2px;
+	  left: 2px;
+	  bottom: 2px;
+	  right: 2px;
+	  background-color: #fff;
+	  border-radius: 30px;
+	  transition: background 0.4s;
+	}
+	input.pop-toggle-round-flat + label:after {
+	  top: 4px;
+	  left: 4px;
+	  bottom: 4px;
+	  width: 11px;
+	  background-color: #dddddd;
+	  border-radius: 11px;
+	  transition: margin 0.4s, background 0.4s;
+	}
+	input.pop-toggle-round-flat:checked + label {
+	  background-color: #0CF7B7; /* #8ce196 */
+	}
+	input.pop-toggle-round-flat:checked + label:after {
+	  margin-left: 15px;
+	  background-color: #0CF7B7; /* #8ce196 */
 	}

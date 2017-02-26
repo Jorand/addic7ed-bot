@@ -72,7 +72,7 @@ $drop.on("drop", function(event) {
 				show.version_addicted = new RegExp(version_map[show.group]);
 
 				console.log(show);
-				
+
 				var str_filename = file_dir + file_wo_extention + '.srt';
 
 				setText("Searching for <br>"+show.title+"<br> season: "+show.season+" espisode: "+show.episode+"<br> Please wait …");
@@ -146,15 +146,21 @@ var password;
 var connected = false;
 var view = "";
 
-getRemoteSettings();	
-//checkConnected(true);
-var popInterval = setInterval(function() {
-	callPopcornApi("getviewstack");
-}, 1000);
-
 var pop_dl_in_progress = false;
-
 var currentShow = null;
+
+getRemoteSettings();
+//checkConnected(true);
+var popInterval;
+function watchPopcorn() {
+	clearInterval(popInterval);
+	popInterval = setInterval(function() {
+		callPopcornApi("getviewstack");
+	}, 1000);
+};
+function stopWatchPopcorn() {
+	clearInterval(popInterval);
+};
 
 $('#button-settings-reload').click(function(event) {
 	event.preventDefault();
@@ -178,6 +184,13 @@ $("#password").on('input', function(){
 	refreshSettings();
 });
 
+$('#switch-pop-enable:checkbox').change(function (event) {
+	event.preventDefault();
+	var isChecked = $(this).is(":checked") ? "on": "off";
+	window.localStorage.setItem("pop_feature", isChecked);
+	refreshSettings();
+});
+
 var popcorn_time_cache_subtitlesList = null;
 
 $('.popcorntime-list-close').click(function(event) {
@@ -193,7 +206,7 @@ $('#popcorn-time-list').click(function(event) {
 	$('.popcorntime-popover-loader').show();
 
 	var $list = $('.popcorntime-subtitles-list');
-	
+
 	pop_dl_in_progress = true;
 
 	var file = currentShow.result.title;
@@ -216,7 +229,7 @@ $('#popcorn-time-list').click(function(event) {
 			var s = subtitlesList[i];
 			var s_link = s['link'].split('/');
 			var updated_version = s_link[s_link.length-1];
-			
+
 			$list.append('<li><a class="popcorntime-sub" href="#" data-index="'+i+'">Version '+s['version']+', '+s['lang']+'</a></li>');
 		}
 
@@ -227,17 +240,7 @@ $('#popcorn-time-list').click(function(event) {
 	});
 });
 
-$('#popcorn-time-ip').click(function(event) {
-	event.preventDefault();
-	var ip = $('#popip').val();
-	console.log(ip);
 
-	$("#ip").val(ip);
-	window.localStorage.setItem("ip", ip);
-	
-	refreshSettings();
-	$('.popcorntime-popover-ip-list').hide();
-});
 
 $('.popcorntime-subtitles-list').delegate('a','click',function(event) {
 	event.preventDefault();
@@ -251,7 +254,7 @@ $('.popcorntime-subtitles-list').delegate('a','click',function(event) {
 
 		if (sub) {
 
-			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt'; 
+			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt';
 
 			dialog.showOpenDialog({
 				title:"Select a folder",
@@ -296,7 +299,7 @@ $('#popcorn-time-yes').click(function(event) {
 	event.preventDefault();
 	$('.popcorntime-popover').hide();
 	$('.popcorntime-popover-loader').show();
-	
+
 	pop_dl_in_progress = true;
 
 	var file = currentShow.result.title;
@@ -332,7 +335,7 @@ $('#popcorn-time-yes').click(function(event) {
 			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE';
 
 			if (sub.version) {
-				str_filename += '.'+sub.version; 
+				str_filename += '.'+sub.version;
 			}
 
 			str_filename += '.srt';
@@ -387,13 +390,49 @@ function hideNotice() {
 	}
 }
 
+function setPopStatus(active) {
+	$status = $('#popStatus');
+	if (active) {
+		$status.addClass('on');
+	}
+	else {
+		$status.removeClass('on');
+	}
+
+}
+
+function findPopIp(checkConnection) {
+
+	var interfaces = os.networkInterfaces();
+	var addresses = [];
+	for (var k in interfaces) {
+	    for (var k2 in interfaces[k]) {
+	        var address = interfaces[k][k2];
+	        if (address.family === 'IPv4' && !address.internal) {
+	            addresses.push(address.address);
+	        }
+	    }
+	}
+
+	console.log(addresses);
+
+	if (checkConnection) {
+		for (var i = 0; i < addresses.length; i++) {
+			if (addresses[i] != window.ip) {
+				checkConnected(false, addresses[i]);
+			}
+		}
+	}
+
+}
+
 function popcorntimeNotifySub() {
 
 	var isShow = function(data) {
 		//The Magicians S2 E4 - The Flying Forest
 		// The Flash S3 E13 - Attack on Gorilla City (1)
 		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace('Season ', 'S').replace('Episode ', 'E');
-		
+
 		var regexp = new RegExp(/([S|E])([0-9]+)/, 'ig');
 		title_tpn = title_tpn.replace(regexp, function(match, p1, p2, p3, offset, string) {
 			return p1+''+pad(p2);
@@ -416,7 +455,7 @@ function popcorntimeNotifySub() {
 		if (data.result.title) {
 			isShow(data);
 		}
-		
+
 	});
 
 	callPopcornApi("getloading", function(data) {
@@ -430,9 +469,11 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 
 	//console.log(method);
 
-	if (!window.connected) {
+	if (window.ip == "" || !window.ip) {
+		console.log("nop");
 		return false;
 	}
+
 	if(typeof params === "undefined") {
 		params = [];
 	}
@@ -440,19 +481,19 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 		callback = params;
 		params = [];
 	}
-	
+
 	var request = {};
 	request.params = params;
 	request.id = 10;
 	request.method = method;
 	request.jsonrpc = "2.0";
-	
+
 	$.ajax({
 		type: 'POST',
 		url: 'http://' + window.ip + ':' + window.port,
 		data: JSON.stringify(request),
-		beforeSend: function (xhr) { 
-			xhr.setRequestHeader('Authorization', window.btoa(window.username + ":" + window.password)); 
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader('Authorization', window.btoa(window.username + ":" + window.password));
 		},
 		success: function(data, textStatus) {
 			//console.log(data);
@@ -462,20 +503,24 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 			else if (callback !== undefined) {
 				callback(data);
 			}
+			window.connected = true;
+			setPopStatus(true);
 		},
 		error: function (request, status, error) {
 			console.error("[ERROR] Could not connect to given client.");
 			alertPop("Could not connect to Popcorn Time. Please check your settings.");
 			window.connected = false;
+			setPopStatus(false);
 			hideNotice();
-		}	
+			findPopIp();
+		}
 	});
-	
+
 }
 
-function viewstackhandler(data){	
+function viewstackhandler(data){
 	//console.log(data);
-	// Pre 0.3.4 
+	// Pre 0.3.4
 	if( typeof(data.result.butterVersion) == "undefined" ) { //check if using an old before 0.3.4
 		currentview = data.result[0][data.result[0].length - 1];
 	}
@@ -491,7 +536,7 @@ function viewstackhandler(data){
 				hideNotice();
 				break;
 			case 'main-browser':
-				//mainBrowser(); 
+				//mainBrowser();
 				hideNotice();
 				break;
 			case 'movie-detail':
@@ -519,23 +564,28 @@ function viewstackhandler(data){
 
 function closeSettings() {
 	sectionGo('home');
-	window.view = ""; 
-	callPopcornApi("getviewstack"); 
+	window.view = "";
+	callPopcornApi("getviewstack");
 }
 
 function getRemoteSettings() {
 	console.debug("[DEBUG] Port: "+window.localStorage.getItem("port"));
-	
+
+	//check feature enable
+	if(window.localStorage.getItem("pop_feature") == null) {
+		window.localStorage.setItem("pop_feature", "off");
+	}
+
 	//check port
 	if(window.localStorage.getItem("port") == null) {
 		window.localStorage.setItem("port", "8008");
 	}
-	
+
 	//check username
 	if(window.localStorage.getItem("username") == null) {
 		window.localStorage.setItem("username", "popcorn");
 	}
-	
+
 	//check password
 	if(window.localStorage.getItem("password") == null) {
 		window.localStorage.setItem("password", "popcorn");
@@ -545,111 +595,113 @@ function getRemoteSettings() {
 	if(window.localStorage.getItem("subtitle_lang") == null) {
 		window.localStorage.setItem("subtitle_lang", subtitle_lang_default);
 	}
-	
+
+	var pop_feature = window.localStorage.getItem("pop_feature") == "on";
+
+	$('#switch-pop-enable:checkbox').prop('checked', pop_feature);
+
 	$("#ip").val(window.localStorage.getItem("ip"));
-	
+
 	$("#port").val(window.localStorage.getItem("port"));
-	
+
 	$("#username").val(window.localStorage.getItem("username"));
-	
+
 	$("#password").val(window.localStorage.getItem("password"));
 
 	$("#subtitle_lang").val(window.localStorage.getItem("subtitle_lang"));
-	
+
 	refreshSettings();
 }
 
 function refreshSettings() {
+
+	if (window.connected) {
+		stopWatchPopcorn();
+	}
+
+	window.pop_feature = window.localStorage.getItem("pop_feature") == "on";
 
 	window.ip = window.localStorage.getItem("ip");
 	window.port = window.localStorage.getItem("port");
 	window.username = window.localStorage.getItem("username");
 	window.password = window.localStorage.getItem("password");
 	subtitle_lang = window.localStorage.getItem("subtitle_lang");
-	console.log(subtitle_lang);
-	checkConnected(true);
+
+	console.log("[LANG] "+subtitle_lang);
 	console.debug("[DEBUG] Settings refreshed.");
 
+	if (window.pop_feature) {
+		watchPopcorn();
+		if (!window.ip || window.ip == "") {
+			findPopIp(true);
+		}
+		else {
+			checkConnected(true);
+		}
+	}
 }
 
-function findPopIp() {
-
-	if (window.connected) {
-		$('#popcorntime-popover-ip-list').hide();
-		return false;
-	}
-
-	$listIp = $('#popip');
-	$listIp.html('');
-
-	var interfaces = os.networkInterfaces();
-	var addresses = [];
-	for (var k in interfaces) {
-	    for (var k2 in interfaces[k]) {
-	        var address = interfaces[k][k2];
-	        if (address.family === 'IPv4' && !address.internal) {
-	            addresses.push(address.address);
-	            $listIp.append('<option value="'+address.address+'">'+address.address+'</option>');
-	        }
-	    }
-	}
-
-	console.log(addresses);
-
-	if (addresses.length > 0) {
-		$('.popcorntime-popover-ip-list').show();
-	}
-
-}
-
-function checkConnected(warning) {
+function checkConnected(warning, try_ip) {
 	var request = {};
-		
+
 	request.params = [];
 	request.id = 10;
 	request.method = 'ping';
 	request.jsonrpc = "2.0";
-	
+
+	var testIP = try_ip ? try_ip : window.ip;
+
+	console.log(testIP);
+
 	$.ajax({
 		type: 'POST',
-		url: 'http://' + window.ip + ':' + window.port,
+		url: 'http://' + testIP + ':' + window.port,
 		data: JSON.stringify(request),
-		//dataType: 'json', 
-		beforeSend: function (xhr){ 
-			xhr.setRequestHeader('Authorization', window.btoa(window.username + ":" + window.password)); 
+		//dataType: 'json',
+		beforeSend: function (xhr){
+			xhr.setRequestHeader('Authorization', window.btoa(window.username + ":" + window.password));
 		},
 		success: function(data, textStatus) {
 			if(typeof data.error == "undefined") { //check if there are no errors
 				console.info("[INFO] Connection established.");
 				//closeSettings();
 				window.connected = true;
+				setPopStatus(true);
 				alertPop("Connected :)");
+
+				if (try_ip) {
+					window.localStorage.setItem("ip", try_ip);
+					$("#ip").val(window.localStorage.getItem("ip"));
+				}
+
 			}
 			else { //there are errors
 				window.connected = false;
+				setPopStatus(false);
 				if(warning){
 					console.error("[ERROR] Invalid login credentials.");
 					alertPop("Invalid login credetials provided.");
-					findPopIp();
+					findPopIp(true);
 				}
-				
+
 			}
 		},
 		error: function() {
 			window.connected = false;
+			setPopStatus(false);
 			if(warning) {
 				console.error("[ERROR] Could not connect to given client.");
 				alertPop("Could not connect to Popcorn Time. Please check your settings.");
-				findPopIp();
+				findPopIp(true);
 			}
 		}
 	});
 
 	var popInterval = setTimeout(function() {
-		if (!window.connected) {
-			findPopIp();
+		if (!window.connected && warning) {
+			findPopIp(true);
 		}
-	}, 6000);
+	}, 4000);
 
 }
 
