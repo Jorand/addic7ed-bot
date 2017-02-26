@@ -196,6 +196,9 @@ var popcorn_time_cache_subtitlesList = null;
 $('.popcorntime-list-close').click(function(event) {
 	event.preventDefault();
 	$('.popcorntime-popover-list').hide();
+	$('.popcorntime-popover-loader').hide();
+	pop_dl_in_progress = false;
+	setText("Drop your file here :)");
 });
 
 $('#popcorn-time-list').click(function(event) {
@@ -471,6 +474,9 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 
 	if (window.ip == "" || !window.ip) {
 		console.log("nop");
+		if (window.connected == false) {
+			findPopIp(true);
+		}
 		return false;
 	}
 
@@ -512,7 +518,7 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 			window.connected = false;
 			setPopStatus(false);
 			hideNotice();
-			findPopIp();
+			findPopIp(true);
 		}
 	});
 
@@ -630,14 +636,20 @@ function refreshSettings() {
 	console.log("[LANG] "+subtitle_lang);
 	console.debug("[DEBUG] Settings refreshed.");
 
+	$popSettings = $('.pop-settings');
+
 	if (window.pop_feature) {
 		watchPopcorn();
+		$popSettings.show();
 		if (!window.ip || window.ip == "") {
 			findPopIp(true);
 		}
 		else {
 			checkConnected(true);
 		}
+	}
+	else {
+		$popSettings.hide();
 	}
 }
 
@@ -671,6 +683,7 @@ function checkConnected(warning, try_ip) {
 
 				if (try_ip) {
 					window.localStorage.setItem("ip", try_ip);
+					refreshSettings();
 					$("#ip").val(window.localStorage.getItem("ip"));
 				}
 
@@ -706,7 +719,7 @@ function checkConnected(warning, try_ip) {
 }
 
 function alertPop(msg) {
-	$('.alert-pop').text(msg);
+	$('.alert-pop').show().text(msg);
 }
 
 function pad(n) {

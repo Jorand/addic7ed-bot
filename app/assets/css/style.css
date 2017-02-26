@@ -90,6 +90,7 @@ body{
 	text-align: center;
 	padding: 5px;
 	font-size: 0.8rem;
+	display: none;
 }
 
 .section {
@@ -183,6 +184,10 @@ body{
 		padding: 15px;
 		transition: all 100ms;
 	}
+
+.pop-settings {
+	margin-bottom: 20px;
+}
 
 .switch-enable-pop {
 	position: absolute;
