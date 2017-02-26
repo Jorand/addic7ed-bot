@@ -237,9 +237,9 @@ $('.popcorntime-subtitles-list').delegate('a','click',function() {
 
 		var show = currentShow.tnp;
 
-		var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt'; 
-
 		if (sub) {
+
+			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt'; 
 
 			dialog.showOpenDialog({
 				title:"Select a folder",
@@ -271,6 +271,11 @@ $('.popcorntime-subtitles-list').delegate('a','click',function() {
 					});
 				}
 			});
+		}
+		else {
+			$('.popcorntime-popover-loader').hide();
+			setText("Oups, no subtitles found !");
+			pop_dl_in_progress = false;
 		}
 	}
 });
@@ -310,9 +315,15 @@ $('#popcorn-time-yes').click(function(event) {
 
 		var sub = subtitlesList[last_updated_version_i];
 
-		var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt'; 
-
 		if (sub) {
+
+			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE';
+
+			if (sub.version) {
+				str_filename += '.'+sub.version; 
+			}
+
+			str_filename += '.srt';
 
 			dialog.showOpenDialog({
 				title:"Select a folder",
@@ -342,6 +353,11 @@ $('#popcorn-time-yes').click(function(event) {
 				}
 			});
 		}
+		else {
+			$('.popcorntime-popover-loader').hide();
+			setText("Oups, no subtitles found !");
+			pop_dl_in_progress = false;
+		}
 
 	});
 
@@ -362,9 +378,17 @@ function hideNotice() {
 function popcorntimeNotifySub() {
 
 	var isShow = function(data) {
-		var title_tpn = data.result.title.replace(' - ', ' ').replace(',', '').replace('Season ', 'S').replace('Episode ', 'E');
+		//The Magicians S2 E4 - The Flying Forest
+		// The Flash S3 E13 - Attack on Gorilla City (1)
+		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace('Season ', 'S').replace('Episode ', 'E');
+		
+		var regexp = new RegExp(/([S|E])([0-9]+)/, 'ig');
+		title_tpn = title_tpn.replace(regexp, function(match, p1, p2, p3, offset, string) {
+			return p1+''+pad(p2);
+		});
+
 		var show = tnp(title_tpn);
-		console.log(show);
+		console.log(data, title_tpn,show);
 
 		if (show.season && show.episode) {
 			data.tnp = show;
@@ -581,5 +605,5 @@ function alertPop(msg) {
 }
 
 function pad(n) {
-    return new Array(n).join('0').slice((n || 2) * -1) + this;
+	return (n < 10) ? ("0" + n) : n;
 }
