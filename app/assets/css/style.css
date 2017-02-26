@@ -183,3 +183,24 @@ body{
 		padding: 15px;
 		transition: all 100ms;
 	}
+
+.popcorntime-popover-ip-list {
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: auto;
+	background-color: #0CF7B7;
+	padding: 0px 20px;
+	font-size: 0.8rem;
+	display: none;
+}
+
+	.popcorntime-popover-ip-list .pop-button {
+		
+	}
+
+	.pop-select {
+		margin-bottom: 20px;
+	}

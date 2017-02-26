@@ -1,4 +1,5 @@
 /**** Dependencies ****/
+var os = require('os');
 var addic7edApi = require('addic7ed-api');
 var tnp = require('torrent-name-parser');
 
@@ -146,7 +147,7 @@ var connected = false;
 var view = "";
 
 getRemoteSettings();	
-checkConnected(true);
+//checkConnected(true);
 var popInterval = setInterval(function() {
 	callPopcornApi("getviewstack");
 }, 1000);
@@ -154,7 +155,6 @@ var popInterval = setInterval(function() {
 var pop_dl_in_progress = false;
 
 var currentShow = null;
-
 
 $('#button-settings-reload').click(function(event) {
 	event.preventDefault();
@@ -227,7 +227,19 @@ $('#popcorn-time-list').click(function(event) {
 	});
 });
 
-$('.popcorntime-subtitles-list').delegate('a','click',function() {
+$('#popcorn-time-ip').click(function(event) {
+	event.preventDefault();
+	var ip = $('#popip').val();
+	console.log(ip);
+
+	$("#ip").val(ip);
+	window.localStorage.setItem("ip", ip);
+	
+	refreshSettings();
+	$('.popcorntime-popover-ip-list').hide();
+});
+
+$('.popcorntime-subtitles-list').delegate('a','click',function(event) {
 	event.preventDefault();
 	var index = $(this).data('index');
 
@@ -555,8 +567,39 @@ function refreshSettings() {
 	window.password = window.localStorage.getItem("password");
 	subtitle_lang = window.localStorage.getItem("subtitle_lang");
 	console.log(subtitle_lang);
-	checkConnected(false);
+	checkConnected(true);
 	console.debug("[DEBUG] Settings refreshed.");
+
+}
+
+function findPopIp() {
+
+	if (window.connected) {
+		$('#popcorntime-popover-ip-list').hide();
+		return false;
+	}
+
+	$listIp = $('#popip');
+	$listIp.html('');
+
+	var interfaces = os.networkInterfaces();
+	var addresses = [];
+	for (var k in interfaces) {
+	    for (var k2 in interfaces[k]) {
+	        var address = interfaces[k][k2];
+	        if (address.family === 'IPv4' && !address.internal) {
+	            addresses.push(address.address);
+	            $listIp.append('<option value="'+address.address+'">'+address.address+'</option>');
+	        }
+	    }
+	}
+
+	console.log(addresses);
+
+	if (addresses.length > 0) {
+		$('.popcorntime-popover-ip-list').show();
+	}
+
 }
 
 function checkConnected(warning) {
@@ -583,21 +626,31 @@ function checkConnected(warning) {
 				alertPop("Connected :)");
 			}
 			else { //there are errors
+				window.connected = false;
 				if(warning){
 					console.error("[ERROR] Invalid login credentials.");
 					alertPop("Invalid login credetials provided.");
+					findPopIp();
 				}
-				window.connected = false;
+				
 			}
 		},
 		error: function() {
+			window.connected = false;
 			if(warning) {
 				console.error("[ERROR] Could not connect to given client.");
 				alertPop("Could not connect to Popcorn Time. Please check your settings.");
+				findPopIp();
 			}
-			window.connected = false;
 		}
 	});
+
+	var popInterval = setTimeout(function() {
+		if (!window.connected) {
+			findPopIp();
+		}
+	}, 6000);
+
 }
 
 function alertPop(msg) {
