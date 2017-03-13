@@ -43,7 +43,7 @@ $drop.on("drop", function(event) {
 
 	console.log(drop_in_progress);
 
-	if (drop_in_progress == false) {
+	if (drop_in_progress === false) {
 		drop_in_progress = true;
 
 		refreshSettings();
@@ -79,16 +79,19 @@ $drop.on("drop", function(event) {
 
 				console.log(subtitle_lang);
 
-				addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(function (subtitlesList) {
+				addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(
+					function (subtitlesList) {
 
+					//console.log(subtitlesList);
+					//return false;
 					var last_updated_version = 0,
 						last_updated_version_i = 0,
 						i;
 
 					for (i = 0; i < subtitlesList.length; ++i) {
 						s = subtitlesList[i];
-						if (show.version_addicted.test(s['version'])) {
-							s_link = s['link'].split('/');
+						if (show.version_addicted.test(s.version)) {
+							s_link = s.link.split('/');
 							updated_version = s_link[s_link.length-1];
 							if (updated_version > last_updated_version){
 								last_updated_version = updated_version;
@@ -157,10 +160,10 @@ function watchPopcorn() {
 	popInterval = setInterval(function() {
 		callPopcornApi("getviewstack");
 	}, 1000);
-};
+}
 function stopWatchPopcorn() {
 	clearInterval(popInterval);
-};
+}
 
 $('#button-settings-reload').click(function(event) {
 	event.preventDefault();
@@ -222,23 +225,32 @@ $('#popcorn-time-list').click(function(event) {
 
 		console.log(subtitlesList);
 
-		$list.html('');
+		if (subtitlesList.length > 0) {
 
-		var last_updated_version = 0,
-			last_updated_version_i = 0,
-			i;
+			$list.html('');
 
-		for (i = 0; i < subtitlesList.length; ++i) {
-			var s = subtitlesList[i];
-			var s_link = s['link'].split('/');
-			var updated_version = s_link[s_link.length-1];
+			var last_updated_version = 0,
+				last_updated_version_i = 0,
+				i;
 
-			$list.append('<li><a class="popcorntime-sub" href="#" data-index="'+i+'">Version '+s['version']+', '+s['lang']+'</a></li>');
+			for (i = 0; i < subtitlesList.length; ++i) {
+				var s = subtitlesList[i];
+				var s_link = s.link.split('/');
+				var updated_version = s_link[s_link.length-1];
+
+				$list.append('<li><a class="popcorntime-sub" href="#" data-index="'+i+'">Version '+s.version+', '+s.lang+'</a></li>');
+			}
+
+			$('.popcorntime-popover-list').show();
+
+			popcorn_time_cache_subtitlesList = subtitlesList;
+
 		}
-
-		$('.popcorntime-popover-list').show();
-
-		popcorn_time_cache_subtitlesList = subtitlesList;
+		else {
+			$('.popcorntime-popover-loader').hide();
+			setText("Oups, no subtitles found !");
+			pop_dl_in_progress = false;
+		}
 
 	});
 });
@@ -315,23 +327,28 @@ $('#popcorn-time-yes').click(function(event) {
 
 	addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(function (subtitlesList) {
 
-		var last_updated_version = 0,
-			last_updated_version_i = 0,
-			i;
+		var sub = false;
 
-		for (i = 0; i < subtitlesList.length; ++i) {
-			s = subtitlesList[i];
-			if (show.version_addicted.test(s['version'])) {
-				s_link = s['link'].split('/');
-				updated_version = s_link[s_link.length-1];
-				if (updated_version > last_updated_version){
-					last_updated_version = updated_version;
-					last_updated_version_i = i;
+		if (subtitlesList.length > 0) {
+
+			var last_updated_version = 0,
+				last_updated_version_i = 0,
+				i;
+
+			for (i = 0; i < subtitlesList.length; ++i) {
+				s = subtitlesList[i];
+				if (show.version_addicted.test(s.version)) {
+					s_link = s.link.split('/');
+					updated_version = s_link[s_link.length-1];
+					if (updated_version > last_updated_version){
+						last_updated_version = updated_version;
+						last_updated_version_i = i;
+					}
 				}
 			}
-		}
 
-		var sub = subtitlesList[last_updated_version_i];
+			sub = subtitlesList[last_updated_version_i];
+		}
 
 		if (sub) {
 
@@ -472,9 +489,9 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 
 	//console.log(method);
 
-	if (window.ip == "" || !window.ip) {
+	if (window.ip === "" || !window.ip) {
 		console.log("nop");
-		if (window.connected == false) {
+		if (window.connected === false) {
 			findPopIp(true);
 		}
 		return false;
@@ -534,7 +551,7 @@ function viewstackhandler(data){
 		currentview = data.result.viewstack[data.result.viewstack.length - 1];
 	}
 
-	if(window.view != currentview &&	$("#settings").is(":visible") == false ) { //check if view is changed
+	if(window.view != currentview && $("#settings").is(":visible") === false ) { //check if view is changed
 		console.debug("[DEBUG] Current view: " + currentview);
 		switch(currentview) {
 			case 'shows-container-contain':
@@ -552,13 +569,15 @@ function viewstackhandler(data){
 			case 'app-overlay':
 				//player();
 				popcorntimeNotifySub();
+				break;
 			case 'player':
 				//player();
 				popcorntimeNotifySub();
+				break;
 			case 'notificationWrapper':
 				//player();
 				popcorntimeNotifySub();
-			break;
+				break;
 			default:
 				hideNotice();
 				console.debug("[DEBUG] Current view: " + currentview);
@@ -578,27 +597,27 @@ function getRemoteSettings() {
 	console.debug("[DEBUG] Port: "+window.localStorage.getItem("port"));
 
 	//check feature enable
-	if(window.localStorage.getItem("pop_feature") == null) {
+	if(window.localStorage.getItem("pop_feature") === null) {
 		window.localStorage.setItem("pop_feature", "off");
 	}
 
 	//check port
-	if(window.localStorage.getItem("port") == null) {
+	if(window.localStorage.getItem("port") === null) {
 		window.localStorage.setItem("port", "8008");
 	}
 
 	//check username
-	if(window.localStorage.getItem("username") == null) {
+	if(window.localStorage.getItem("username") === null) {
 		window.localStorage.setItem("username", "popcorn");
 	}
 
 	//check password
-	if(window.localStorage.getItem("password") == null) {
+	if(window.localStorage.getItem("password") === null) {
 		window.localStorage.setItem("password", "popcorn");
 	}
 
 	//check password
-	if(window.localStorage.getItem("subtitle_lang") == null) {
+	if(window.localStorage.getItem("subtitle_lang") === null) {
 		window.localStorage.setItem("subtitle_lang", subtitle_lang_default);
 	}
 
@@ -641,7 +660,7 @@ function refreshSettings() {
 	if (window.pop_feature) {
 		watchPopcorn();
 		$popSettings.show();
-		if (!window.ip || window.ip == "") {
+		if (!window.ip || window.ip === "") {
 			findPopIp(true);
 		}
 		else {
