@@ -189,6 +189,11 @@ body{
 	margin-bottom: 20px;
 }
 
+	.pop-settings-info {
+		font-size: 0.7em;
+		line-height: 1.2em;
+	}
+
 .switch-enable-pop {
 	position: absolute;
 	bottom: 0;
@@ -211,6 +216,7 @@ body{
 		display: inline-block;
 		vertical-align: middle;
 	}
+
 
 /* TOGGLE
 http://callmenick.com/post/css-toggle-switch-examples */

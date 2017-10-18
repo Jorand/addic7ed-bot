@@ -7,7 +7,14 @@ var remote = require('electron').remote;
 var dialog = remote.dialog;
 var shell = remote.shell;
 
-var subtitle_lang, subtitle_lang_default = "fre"; //eng
+//open links externally by default
+$(document).on('click', 'a[href^="http"]', function(event) {
+    event.preventDefault();
+    shell.openExternal(this.href);
+});
+
+
+var subtitle_lang, subtitle_lang_default = "eng"; //eng
 var version_map = {
 	"HDTV": "(DIMENSION|LOL)",
 	"WEB-DL": "WEB-DL"
@@ -184,6 +191,11 @@ $("#username").on('input', function(){
 });
 $("#password").on('input', function(){
 	window.localStorage.setItem("password", $(this).val());
+	refreshSettings();
+});
+
+$("#subtitle_lang").on('input', function(){
+	window.localStorage.setItem("subtitle_lang", $(this).val());
 	refreshSettings();
 });
 
@@ -616,7 +628,7 @@ function getRemoteSettings() {
 		window.localStorage.setItem("password", "popcorn");
 	}
 
-	//check password
+	//check lang
 	if(window.localStorage.getItem("subtitle_lang") === null) {
 		window.localStorage.setItem("subtitle_lang", subtitle_lang_default);
 	}
