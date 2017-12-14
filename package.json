@@ -22,15 +22,17 @@
     "appId": "com.electron.addic7ed-bot",
     "mac": {
       "category": "public.app-category.developer-tools",
-      "publish": ["github"]
+      "publish": [
+        "github"
+      ]
     },
-    "win": {
-    }
+    "win": {}
   },
   "devDependencies": {
-    "electron": "^1.4.15",
-    "electron-builder": "^13.6.0",
-    "electron-packager": "^8.5.1",
-    "electron-rebuild": "^1.5.7"
-  }
+    "electron": "^1.7.9",
+    "electron-builder": "^19.47.1",
+    "electron-packager": "^10.1.0",
+    "electron-rebuild": "^1.6.0"
+  },
+  "dependencies": {}
 }

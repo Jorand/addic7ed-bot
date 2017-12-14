@@ -194,6 +194,10 @@ body{
 		line-height: 1.2em;
 	}
 
+	.settings-select {
+		width: 150px;
+	}
+
 .switch-enable-pop {
 	position: absolute;
 	bottom: 0;

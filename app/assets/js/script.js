@@ -2,6 +2,7 @@
 var os = require('os');
 var addic7edApi = require('addic7ed-api');
 var tnp = require('torrent-name-parser');
+var iso6392 = require('iso-639-2');
 
 var remote = require('electron').remote;
 var dialog = remote.dialog;
@@ -13,6 +14,10 @@ $(document).on('click', 'a[href^="http"]', function(event) {
     shell.openExternal(this.href);
 });
 
+var $langSelect = $('#subtitle_lang');
+$.each(iso6392, function(key, value) {   
+	$langSelect.append($("<option></option>").attr("value",value.iso6392B).text(value.name)); 
+});
 
 var subtitle_lang, subtitle_lang_default = "eng"; //eng
 var version_map = {
@@ -89,8 +94,33 @@ $drop.on("drop", function(event) {
 				addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(
 					function (subtitlesList) {
 
-					//console.log(subtitlesList);
+					console.log(subtitlesList);
 					//return false;
+					var i;
+
+					var fireMovie = function(end, index) {
+						if (index == end) {
+							shell.openItem(full_path);
+							$drop.removeClass('hover');
+							drop_in_progress = false;
+						}
+					};
+
+					if (subtitlesList.length > 0) {
+						for (i = 0; i < subtitlesList.length; ++i) {
+							s = subtitlesList[i];
+							var str_fname = file_dir + file_wo_extention + '.by.' + i + '.' + s.version + '-' + s.lang  + '.srt';
+							addic7edApi.download(s, str_fname).then(function () {
+								console.log('Subtitles file saved');
+								setText("Subtitle downloaded ! Enjoy :)");
+								fireMovie(subtitlesList.length, i);
+							});
+						}
+					}
+					else {
+						drop_in_progress = false;
+					}
+					/*
 					var last_updated_version = 0,
 						last_updated_version_i = 0,
 						i;
@@ -121,6 +151,7 @@ $drop.on("drop", function(event) {
 					else {
 						drop_in_progress = false;
 					}
+					*/
 				});
 			}
 			else {
@@ -267,6 +298,73 @@ $('#popcorn-time-list').click(function(event) {
 	});
 });
 
+$('#popcorn-time-all').click(function(event) {
+	event.preventDefault();
+
+	$('.popcorntime-popover').hide();
+	$('.popcorntime-popover-loader').show();
+
+	pop_dl_in_progress = true;
+
+	var file = currentShow.result.title;
+
+	var show = currentShow.tnp;
+
+	setText("Searching for <br>"+show.title+"<br> season: "+show.season+" espisode: "+show.episode);
+
+	addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(
+		function (subtitlesList) {
+
+		console.log(subtitlesList);
+		//return false;
+		var i;
+
+		if (subtitlesList.length > 0) {
+
+			dialog.showOpenDialog({
+				title:"Select a folder",
+				properties: ["openDirectory"]
+			},function (folderPaths) {
+
+				$('.popcorntime-popover-loader').hide();
+				// folderPaths is an array that contains all the selected paths
+				if(folderPaths === undefined){
+					setText("Oups, no destination folder selected !");
+					pop_dl_in_progress = false;
+					return;
+				}
+				else {
+
+					var file_dir = folderPaths[0]+'/';
+
+					var fireMovie = function(end, index, str_fname) {
+						if (index == end) {
+							shell.showItemInFolder(str_fname);
+							$drop.removeClass('hover');
+							pop_dl_in_progress = false;
+						}
+					};
+
+					for (i = 0; i < subtitlesList.length; ++i) {
+						var s = subtitlesList[i];
+						console.log(s);
+						var filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode;
+						var str_fname = file_dir + filename + '.by.' + i + '.' + s.version + '-' + s.lang  + '.srt';
+						addic7edApi.download(s, str_fname).then(function () {
+							console.log('Subtitles file saved');
+							setText("Subtitle downloaded ! Enjoy :)");
+							fireMovie(subtitlesList.length, i, str_fname);
+						});
+					}
+				}
+			});
+		}
+		else {
+			drop_in_progress = false;
+		}
+	});
+
+});
 
 
 $('.popcorntime-subtitles-list').delegate('a','click',function(event) {
@@ -281,7 +379,7 @@ $('.popcorntime-subtitles-list').delegate('a','click',function(event) {
 
 		if (sub) {
 
-			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.FRE.'+sub.version+'.srt';
+			var str_filename = show.title.replace(' ', '.') + '.S'+show.season+'E'+show.episode+'.'+subtitle_lang+'.'+sub.version+'.srt';
 
 			dialog.showOpenDialog({
 				title:"Select a folder",
@@ -340,6 +438,8 @@ $('#popcorn-time-yes').click(function(event) {
 	addic7edApi.search(show.title, show.season, show.episode, subtitle_lang).then(function (subtitlesList) {
 
 		var sub = false;
+
+		console.log("[addic7edApi] :",subtitlesList);
 
 		if (subtitlesList.length > 0) {
 
@@ -446,7 +546,7 @@ function findPopIp(checkConnection) {
 	    }
 	}
 
-	console.log(addresses);
+	//console.log(addresses);
 
 	if (checkConnection) {
 		for (var i = 0; i < addresses.length; i++) {
@@ -463,7 +563,7 @@ function popcorntimeNotifySub() {
 	var isShow = function(data) {
 		//The Magicians S2 E4 - The Flying Forest
 		// The Flash S3 E13 - Attack on Gorilla City (1)
-		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace('Season ', 'S').replace('Episode ', 'E');
+		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace(/Season |Saison /g,'S').replace(/Episode |Épisode /g,'E');
 
 		var regexp = new RegExp(/([S|E])([0-9]+)/, 'ig');
 		title_tpn = title_tpn.replace(regexp, function(match, p1, p2, p3, offset, string) {
@@ -471,7 +571,8 @@ function popcorntimeNotifySub() {
 		});
 
 		var show = tnp(title_tpn);
-		console.log(data, title_tpn,show);
+
+		//console.log(data, title_tpn,show);
 
 		if (show.season && show.episode) {
 			data.tnp = show;

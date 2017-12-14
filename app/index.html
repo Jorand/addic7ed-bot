@@ -37,8 +37,12 @@
 					Username <br> <input type="text" name="username" id="username" /> <br />
 					Password <br> <input type="text" name="password" id="password" /> <br />
 				</div>
-				<a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">Language</a> <br> <input type="text" name="subtitle_lang" id="subtitle_lang" /> <br />
-				<span class="pop-settings-info">Example: 'fre', 'eng'</span>
+				<a href="https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes">Language</a> <br>
+				<select name="subtitle_lang" id="subtitle_lang" class="settings-select">
+					<option value=""></option>
+				</select> 
+				<!-- <input type="text" name="subtitle_lang" id="subtitle_lang" /> <br /> -->
+				<!-- <span class="pop-settings-info">Example: 'fre', 'eng'</span> -->
 				
 			</form>
 			<a id="button-settings-reload">
@@ -49,6 +53,7 @@
 			<h2>Popcorn Time Player detected</h2>
 			<p>Do you want download subtitle ?</p>
 			<a href="#" class="pop-button" id="popcorn-time-yes">YES</a>
+			<a href="#" class="pop-button" id="popcorn-time-all">ALL</a>
 			<a href="#" class="pop-button" id="popcorn-time-list">Show list</a>
 		</div>
 		<div class="popcorntime-popover-loader">
