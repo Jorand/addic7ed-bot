@@ -1,5 +1,21 @@
-.DS_STORE
-.sass-cache
+# dependencies
 node_modules
+
+# poduction
 release-builds
 dist
+build
+
+# misc
+.DS_STORE
+.sass-cache
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# yarn
+package-lock.json
+yarn.lock
+
+electron-builder.yml

@@ -7,6 +7,18 @@
 		<link rel="stylesheet" href="assets/css/style.css">
 	</head>
 	<body>
+		<script>
+			const ipcRenderer = require('electron').ipcRenderer;
+			// wait for an updateReady message
+			ipcRenderer.on('updateReady', function(event, text) {
+				// changes the text of the button
+				var container = document.getElementById('ready');
+				container.innerHTML = "new version ready!";
+			})
+		</script>
+		Version: <span id="version">v0.1.9</span>
+		<!-- the button onClick sends a quitAndInstall message to the electron main process -->
+		<button id="ready" onClick="ipcRenderer.send('quitAndInstall')">no updates ready</button>
 		<div class="section show" id="section-home">
 			<div id="drop">
 				<div class="container">

@@ -277,3 +277,17 @@ http://callmenick.com/post/css-toggle-switch-examples */
 	  margin-left: 15px;
 	  background-color: #0CF7B7; /* #8ce196 */
 	}
+
+#version {
+	position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+#ready {
+	position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
+}

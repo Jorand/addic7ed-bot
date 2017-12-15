@@ -603,7 +603,7 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 	//console.log(method);
 
 	if (window.ip === "" || !window.ip) {
-		console.log("nop");
+		//console.log("nop");
 		if (window.connected === false) {
 			findPopIp(true);
 		}
@@ -643,7 +643,7 @@ function callPopcornApi(method, params, callback) {	//popcorn api wrapper
 			setPopStatus(true);
 		},
 		error: function (request, status, error) {
-			console.error("[ERROR] Could not connect to given client.");
+			//console.error("[ERROR] Could not connect to given client.");
 			alertPop("Could not connect to Popcorn Time. Please check your settings.");
 			window.connected = false;
 			setPopStatus(false);
@@ -824,7 +824,7 @@ function checkConnected(warning, try_ip) {
 				window.connected = false;
 				setPopStatus(false);
 				if(warning){
-					console.error("[ERROR] Invalid login credentials.");
+					//console.error("[ERROR] Invalid login credentials.");
 					alertPop("Invalid login credetials provided.");
 					findPopIp(true);
 				}
@@ -835,7 +835,7 @@ function checkConnected(warning, try_ip) {
 			window.connected = false;
 			setPopStatus(false);
 			if(warning) {
-				console.error("[ERROR] Could not connect to given client.");
+				//console.error("[ERROR] Could not connect to given client.");
 				alertPop("Could not connect to Popcorn Time. Please check your settings.");
 				findPopIp(true);
 			}

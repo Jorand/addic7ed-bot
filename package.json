@@ -15,22 +15,12 @@
     "start": "electron ./app --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
     "pack": "build --dir",
-    "dist": "build",
-    "release": "build"
-  },
-  "build": {
-    "appId": "com.electron.addic7ed-bot",
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "publish": [
-        "github"
-      ]
-    },
-    "win": {}
+    "build": "build",
+    "release": "build -p always"
   },
   "devDependencies": {
     "electron": "^1.7.9",
-    "electron-builder": "^19.47.1",
+    "electron-builder": "^19.49.0",
     "electron-packager": "^10.1.0",
     "electron-rebuild": "^1.6.0"
   },
