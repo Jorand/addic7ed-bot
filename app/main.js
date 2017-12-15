@@ -1,11 +1,22 @@
-const {app, BrowserWindow, autoUpdater, ipcMain} = require('electron')
+const {app, BrowserWindow, ipcMain, dialog} = require('electron')
+const log = require('electron-log');
+const {autoUpdater} = require("electron-updater");
 
 const path = require('path')
 const url = require('url')
 
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+
+function sendStatusToWindow(text) {
+  log.info(text);
+  mainWindow.webContents.send('message', text);
+}
 
 function createWindow () {
   // Create the browser window.
@@ -38,38 +49,50 @@ function createWindow () {
     mainWindow = null
     app.quit();
   })
+
+  return mainWindow;
 }
+
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+  sendStatusToWindow('Update not available.');
+})
+autoUpdater.on('error', (ev, err) => {
+  sendStatusToWindow('Error in auto-updater.');
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+  sendStatusToWindow('Download progress...');
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
-  setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, 60000)
 })
 
-autoUpdater.on('update-available', (info) => {
-    console.log('update-available');
-});
-
-autoUpdater.on('update-not-available', (info) => {
-    console.log('update-not-available');
-});
-
-autoUpdater.on('checking-for-update', (info) => {
-    console.log('checking-for-update');
-});
-
-autoUpdater.on('error', (error) => {
-    console.log("error", error);
-});
-
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
-autoUpdater.on('update-downloaded', (info) => {
+autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     mainWindow.webContents.send('updateReady')
-    console.log(info);
+    const dialogOpts = {
+        type: 'info',
+        buttons: ['Restart', 'Later'],
+        title: 'Application Update',
+        message: process.platform === 'win32' ? releaseNotes : releaseName,
+        detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+      }
+
+      dialog.showMessageBox(dialogOpts, (response) => {
+        if (response === 0) autoUpdater.quitAndInstall()
+      })
 });
 
 // when receiving a quitAndInstall signal, quit and install the new version ;)
@@ -93,6 +116,10 @@ app.on('activate', function () {
     createWindow()
   }
 })
+
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates();
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

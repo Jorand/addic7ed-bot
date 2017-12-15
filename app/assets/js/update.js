@@ -10,6 +10,11 @@ ipcRenderer.on('updateReady', function(event, text) {
 	$('#update-button').show();
 })
 
+ipcRenderer.on('message', function(event, text) {
+	console.log('message', text);
+	$('#message').text(text);
+})
+
 $('#update-button').click((event) => {
 	event.preventDefault();
 	ipcRenderer.send('quitAndInstall')
