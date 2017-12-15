@@ -1,5 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron')
-const {autoUpdater} = require("electron-updater");
+const {app, BrowserWindow, autoUpdater, ipcMain} = require('electron')
 
 const path = require('path')
 const url = require('url')
@@ -48,8 +47,24 @@ app.on('ready', () => {
   createWindow();
   setInterval(() => {
     autoUpdater.checkForUpdates()
-  }, 60000);
+  }, 60000)
 })
+
+autoUpdater.on('update-available', (info) => {
+    console.log('update-available');
+});
+
+autoUpdater.on('update-not-available', (info) => {
+    console.log('update-not-available');
+});
+
+autoUpdater.on('checking-for-update', (info) => {
+    console.log('checking-for-update');
+});
+
+autoUpdater.on('error', (error) => {
+    console.log("error", error);
+});
 
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
 autoUpdater.on('update-downloaded', (info) => {
