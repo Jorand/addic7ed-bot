@@ -13,9 +13,9 @@ log.info('App starting...');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function sendStatusToWindow(text) {
-  log.info(text);
-  mainWindow.webContents.send('message', text);
+function sendStatusToWindow(text, infos) {
+  log.info(text, infos);
+  mainWindow.webContents.send('message', text, infos);
 }
 
 function createWindow () {
@@ -36,9 +36,9 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  // if (NODE_ENV && NODE_ENV == 'development') {
-  //   mainWindow.webContents.openDevTools()
-  // }
+  if (NODE_ENV && NODE_ENV == 'development') {
+    mainWindow.webContents.openDevTools()
+  }
   mainWindow.setMenu(null);
 
   // Emitted when the window is closed.
@@ -57,10 +57,10 @@ autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (ev, info) => {
-  sendStatusToWindow('Update available.');
+  sendStatusToWindow('Update available.', info);
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  sendStatusToWindow('Update not available.');
+  sendStatusToWindow('Update not available.', info);
 })
 autoUpdater.on('error', (ev, err) => {
   sendStatusToWindow('Error in auto-updater.');
@@ -69,7 +69,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
   sendStatusToWindow('Download progress...');
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
-  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+  sendStatusToWindow('Update downloaded; will install in 5 seconds', info);
 });
 
 // This method will be called when Electron has finished

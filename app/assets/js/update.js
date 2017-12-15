@@ -10,8 +10,8 @@ ipcRenderer.on('updateReady', function(event, text) {
 	$('#update-button').show();
 })
 
-ipcRenderer.on('message', function(event, text) {
-	console.log('message', text);
+ipcRenderer.on('message', function(event, text, infos) {
+	console.log('message', text, infos);
 	$('#message').text(text);
 })
 
