@@ -278,16 +278,21 @@ http://callmenick.com/post/css-toggle-switch-examples */
 	  background-color: #0CF7B7; /* #8ce196 */
 	}
 
-#version {
+.version {
 	position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10;
+	bottom: 0;
+	right: 45px;
+	z-index: 10;
+	font-size: 0.7rem;
+	padding: 16px 8px;
+	color: #CCC;
 }
 
-#ready {
-	position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 10;
+#version {
+	height: 18px;
+	line-height: 18px;
+}
+
+#update-button {
+	margin-right: 5px;
 }
