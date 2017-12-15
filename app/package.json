@@ -2,7 +2,7 @@
   "name": "addic7ed-bot",
   "description": "Drop your series to automatically get the correct subtitle from addic7ed.",
   "repository": "https://github.com/Jorand/addic7ed-bot",
-  "version": "0.1.3-beta.3",
+  "version": "0.1.3-beta.4",
   "author": "Jorand",
   "main": "main.js",
   "dependencies": {
