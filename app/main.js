@@ -13,9 +13,9 @@ log.info('App starting...');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function sendStatusToWindow(text, infos) {
-  log.info(text, infos);
-  mainWindow.webContents.send('message', text, infos);
+function sendStatusToWindow(text) {
+  log.info(text);
+  mainWindow.webContents.send('message', text);
 }
 
 function createWindow () {
@@ -36,9 +36,9 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  if (NODE_ENV && NODE_ENV == 'development') {
-    mainWindow.webContents.openDevTools()
-  }
+  // if (NODE_ENV && NODE_ENV == 'development') {
+  //   mainWindow.webContents.openDevTools()
+  // }
   mainWindow.setMenu(null);
 
   // Emitted when the window is closed.
@@ -58,9 +58,10 @@ autoUpdater.on('checking-for-update', () => {
 })
 autoUpdater.on('update-available', (ev, info) => {
   sendStatusToWindow('Update available.', info);
+  mainWindow.webContents.send('updateReady');
 })
 autoUpdater.on('update-not-available', (ev, info) => {
-  sendStatusToWindow('Update not available.', info);
+  sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (ev, err) => {
   sendStatusToWindow('Error in auto-updater.');
@@ -69,7 +70,7 @@ autoUpdater.on('download-progress', (ev, progressObj) => {
   sendStatusToWindow('Download progress...');
 })
 autoUpdater.on('update-downloaded', (ev, info) => {
-  sendStatusToWindow('Update downloaded; will install in 5 seconds', info);
+  sendStatusToWindow('Update downloaded');
 });
 
 // This method will be called when Electron has finished
@@ -80,6 +81,7 @@ app.on('ready', () => {
 })
 
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
+/*
 autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
     mainWindow.webContents.send('updateReady')
     const dialogOpts = {
@@ -99,6 +101,7 @@ autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
 ipcMain.on("quitAndInstall", (event, arg) => {
     autoUpdater.quitAndInstall();
 })
+*/
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -118,7 +121,10 @@ app.on('activate', function () {
 })
 
 app.on('ready', function()  {
-  autoUpdater.checkForUpdates();
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 60000)
+  autoUpdater.checkForUpdates()
 });
 
 // In this file you can include the rest of your app's specific main process

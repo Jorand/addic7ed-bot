@@ -14,8 +14,8 @@
     "start": "electron ./app --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
     "pack": "build --dir",
-    "build": "build",
-    "release": "build -p always"
+    "build": "build --mac --win --linux",
+    "release": "build --mac --win --linux -p always"
   },
   "devDependencies": {
     "electron": "^1.7.9",

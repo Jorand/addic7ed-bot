@@ -295,4 +295,7 @@ http://callmenick.com/post/css-toggle-switch-examples */
 
 #update-button {
 	margin-right: 5px;
+	background-color: #0CF7B7;
+	border: none;
+	border-radius: 4px;
 }
