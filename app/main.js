@@ -46,12 +46,15 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
-  autoUpdater.checkForUpdates();
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 60000);
 })
 
 // when the update has been downloaded and is ready to be installed, notify the BrowserWindow
 autoUpdater.on('update-downloaded', (info) => {
     mainWindow.webContents.send('updateReady')
+    console.log(info);
 });
 
 // when receiving a quitAndInstall signal, quit and install the new version ;)

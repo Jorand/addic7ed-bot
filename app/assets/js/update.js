@@ -6,8 +6,11 @@ $("#version").text("v"+appVersion);
 
 // wait for an updateReady message
 ipcRenderer.on('updateReady', function(event, text) {
+	console.log('updateReady', text);
 	$('#update-button').show();
-	// changes the text of the button
-	var container = document.getElementById('ready');
-	container.innerHTML = "new version ready!";
+})
+
+$('#update-button').click((event) => {
+	event.preventDefault();
+	ipcRenderer.send('quitAndInstall')
 })
