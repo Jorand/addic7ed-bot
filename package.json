@@ -1,7 +1,6 @@
 {
   "productName": "Addic7ed Bot",
   "description": "Drop your series to automatically get the correct subtitle from addic7ed.",
-  "version": "0.1.2",
   "repository": "https://github.com/Jorand/addic7ed-bot",
   "author": "Jorand",
   "license": "MIT",
