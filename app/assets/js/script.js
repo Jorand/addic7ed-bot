@@ -118,7 +118,9 @@ $drop.on("drop", function(event) {
 						}
 					}
 					else {
-						drop_in_progress = false;
+						$('.popcorntime-popover-loader').hide();
+						setText("Oups, no subtitles found !");
+						pop_dl_in_progress = false;
 					}
 					/*
 					var last_updated_version = 0,
@@ -360,7 +362,9 @@ $('#popcorn-time-all').click(function(event) {
 			});
 		}
 		else {
-			drop_in_progress = false;
+			$('.popcorntime-popover-loader').hide();
+			setText("Oups, no subtitles found !");
+			pop_dl_in_progress = false;
 		}
 	});
 
