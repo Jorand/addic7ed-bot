@@ -567,7 +567,7 @@ function popcorntimeNotifySub() {
 	var isShow = function(data) {
 		//The Magicians S2 E4 - The Flying Forest
 		// The Flash S3 E13 - Attack on Gorilla City (1)
-		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace(/Season |Saison /g,'S').replace(/Episode |Épisode /g,'E');
+		var title_tpn = data.result.title.replace(/ - /g, ' ').replace(/,/g, '').replace(/Season |Saison /g,'S').replace(/Episode |Épisode /g,'E').replace(/&amp;/g, "");
 
 		var regexp = new RegExp(/([S|E])([0-9]+)/, 'ig');
 		title_tpn = title_tpn.replace(regexp, function(match, p1, p2, p3, offset, string) {
