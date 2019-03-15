@@ -10,14 +10,14 @@ $("#version").text("v"+appVersion);
 ipcRenderer.on('updateReady', function(event, text) {
 	console.log('updateReady', text);
 	$('#update-button').show();
-})
+});
 
 ipcRenderer.on('message', function(event, text) {
 	console.log('message', text);
 	$('#message').text(text);
-})
+});
 
 $('#update-button').click((event) => {
 	event.preventDefault();
 	shell.openExternal('https://github.com/Jorand/addic7ed-bot/releases/latest');
-})
+});
