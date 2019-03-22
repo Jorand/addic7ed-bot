@@ -1,27 +1,44 @@
 {
+  "name": "addic7ed-bot",
   "productName": "Addic7ed Bot",
-  "description": "Drop your series to automatically get the correct subtitle from addic7ed.",
+  "version": "0.1.4-beta",
+  "description": "Get the correct subtitles.",
   "repository": "https://github.com/Jorand/addic7ed-bot",
-  "author": "Jorand",
-  "license": "MIT",
   "keywords": [
     "Addic7ed",
     "eztv",
-    "subtitle"
+    "subtitle",
+    "electron"
   ],
+  "author": {
+    "name": "Jorand",
+    "email": "contact@jorand.fr",
+    "url": "https://jorand.fr"
+  },
+  "license": "MIT",
+  "main": "./app/main.js",
   "scripts": {
-    "postinstall": "install-app-deps",
-    "start": "electron ./app --enable-logging",
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
     "pack": "build --dir",
+    "dist": "build",
     "build": "build --mac --win --linux",
     "release": "build --mac --win --linux -p always"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
-    "electron-builder": "^19.49.0",
-    "electron-packager": "^10.1.0",
-    "electron-rebuild": "^1.6.0"
+    "electron": "^4.1.0",
+    "electron-builder": "^20.39.0",
+    "electron-packager": "^13.1.1",
+    "electron-rebuild": "^1.8.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "addic7ed-api": "^1.8.0",
+    "electron-log": "^2.2.17",
+    "electron-updater": "^4.0.6",
+    "iso-639-2": "^1.1.0",
+    "jquery": "^3.3.1",
+    "opensubtitles-api": "^4.1.0",
+    "torrent-name-parser": "^0.6.5"
+  }
 }

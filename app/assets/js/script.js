@@ -356,7 +356,9 @@ $('#popcorn-time-all').click(function(event) {
 							console.log('Subtitles file saved');
 							setText("Subtitle downloaded ! Enjoy :)");
 							fireMovie(subtitlesList.length, i, str_fname);
-						});
+						}).catch(function (e) {
+              console.log(e);
+            });
 					}
 				}
 			});
